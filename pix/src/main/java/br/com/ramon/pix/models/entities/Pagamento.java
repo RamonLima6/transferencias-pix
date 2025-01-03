@@ -1,14 +1,11 @@
 package br.com.ramon.pix.models.entities;
 
 import br.com.ramon.pix.models.enums.StatusPagamento;
-import br.com.ramon.pix.models.enums.TipoChave;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -45,15 +42,8 @@ public class Pagamento implements java.io.Serializable {
 
     private String descricao;
 
-    @Setter
-    @Getter
-    @NotNull(message = "A Chave Pix é obrigatória!")
-    private String chavePix;
-
-    @Setter
-    @NotNull(message = "O tipo da Chave Pix é obrigatório!")
-    @Enumerated(EnumType.STRING)
-    private TipoChave tipoChavePix;
+    @Embedded
+    private DestinoPagamento destino;
 
     @Embedded
     private Recorrencia recorrencia;

@@ -3,7 +3,6 @@ package br.com.ramon.pix.controllers;
 import br.com.ramon.pix.models.entities.Pagamento;
 import br.com.ramon.pix.models.repositories.PagamentoRepository;
 import br.com.ramon.pix.services.PagamentoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,7 @@ public class PagamentoController {
     private PagamentoService pagamentoService;
 
     @PostMapping
-    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public ResponseEntity<Pagamento> criarPagamento(@Valid Pagamento pagamento) {
+    public ResponseEntity<Pagamento> criarPagamento(@RequestBody Pagamento pagamento) {
         Pagamento novoPagamento = pagamentoService.salvarPagamento(pagamento);
         return ResponseEntity.ok(novoPagamento);
     }
