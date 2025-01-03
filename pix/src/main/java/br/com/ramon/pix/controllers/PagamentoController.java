@@ -43,9 +43,8 @@ public class PagamentoController {
         pagamentoService.deletePagamento(id);
     }
 
-    @PutMapping(path="/update")
-    public ResponseEntity<Pagamento> updatePagamento(@Valid @RequestBody Pagamento pagamento){
-        Pagamento atualizado = pagamentoService.updatePagamento(pagamento);
-        return ResponseEntity.ok(atualizado);
+    @PatchMapping(path="/update")
+    public Pagamento updatePagamento(@RequestBody Pagamento pagamento){
+        return pagamentoService.updatePagamento(pagamento);
     }
 }

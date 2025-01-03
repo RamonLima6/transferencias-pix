@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Table(name = "pix")
 public class Pagamento implements java.io.Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -48,14 +50,11 @@ public class Pagamento implements java.io.Serializable {
     @NotNull(message = "A Chave Pix é obrigatória!")
     private String chavePix;
 
+    @Setter
     @NotNull(message = "O tipo da Chave Pix é obrigatório!")
     @Enumerated(EnumType.STRING)
     private TipoChave tipoChavePix;
 
     @Embedded
     private Recorrencia recorrencia;
-
-    public void setTipoChave(TipoChave tipoChave) {
-        this.tipoChavePix = tipoChave;
-    }
 }
