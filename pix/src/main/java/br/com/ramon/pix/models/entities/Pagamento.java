@@ -25,11 +25,9 @@ public class Pagamento implements java.io.Serializable {
     @Column(columnDefinition = "UUID")
     private UUID id;
 
-    @NotNull(message = "O status é obrigatório!")
     @Enumerated(EnumType.STRING)
     private StatusPagamento status;
 
-    @NotNull(message = "A data da inclusão é obrigatória!")
     private LocalDate dataInclusao;
 
     @FutureOrPresent(message = "A data do pagamento deve ser atual ou futura!")

@@ -59,7 +59,7 @@ public class PagamentoService {
     }
 
     public Pagamento updatePagamento(Pagamento pagamento) {
-        Pagamento pagamentoExistente = pagamentoRepository.findPagamentoById(pagamento.getId()).orElseThrow(() -> new ResourceNotFoundException("Pagamento não encontrado!"));
+        Pagamento pagamentoExistente = pagamentoRepository.findPagamentoById(pagamento.getId()).orElseThrow(ResourceNotFoundException::new);
 
         if(pagamento.getStatus() != null){
             pagamentoExistente.setStatus(pagamento.getStatus());
@@ -119,5 +119,11 @@ public class PagamentoService {
     @Transactional
     public void deletePagamento(UUID id) {
         pagamentoRepository.deleteByIdCustom(id);
+    }
+
+    public void cancelarPagamento(UUID id) {
+        Pagamento pagamento = pagamentoRepository.findPagamentoById(id).orElseThrow(ResourceNotFoundException::new);
+        pagamento.setStatus(StatusPagamento.CANCELADO);
+        pagamentoRepository.save(pagamento);
     }
 }
