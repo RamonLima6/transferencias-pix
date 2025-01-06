@@ -1,5 +1,7 @@
 package br.com.ramon.pix.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import br.com.ramon.pix.exception.ResourceNotFoundException;
 import br.com.ramon.pix.models.entities.DestinoPagamento;
 import br.com.ramon.pix.models.entities.Pagamento;
@@ -12,13 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 
 @Service
 public class PagamentoService {
+
     @Autowired
-    private PagamentoRepository pagamentoRepository;
+    private final PagamentoRepository pagamentoRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(PagamentoService.class);
+
+    public PagamentoService(PagamentoRepository pagamentoRepository) {
+        this.pagamentoRepository = pagamentoRepository;
+    }
 
     public void definirTipoChavePix(Pagamento pagamento) {
         if (pagamento.getDestino().getChavePix() == null){
@@ -65,11 +75,19 @@ public class PagamentoService {
         if (pagamento.getValor() == null) {
             throw new NullPointerException("Valor null");
         }
+        List<Pagamento> pagamentoExistente = pagamentoRepository.findByValorAndDataPagamentoAndDestino(pagamento.getValor(), pagamento.getDataPagamento(), pagamento.getDestino());
+        if (!pagamentoExistente.isEmpty()) {
+            logger.warn("Já existe um pagamento {} com as mesmas condições: valor={}, data={}, destino={}",
+                    pagamento.getStatus(),
+                    pagamento.getValor(),
+                    pagamento.getDataPagamento(),
+                    pagamento.getDestino());
+        }
         return pagamentoRepository.save(pagamento);
     }
 
-    public Pagamento updatePagamento(Pagamento pagamento) {
-        Pagamento pagamentoExistente = pagamentoRepository.findPagamentoById(pagamento.getId()).orElseThrow(ResourceNotFoundException::new);
+    public Pagamento updatePagamento(UUID id, Pagamento pagamento) {
+        Pagamento pagamentoExistente = pagamentoRepository.findPagamentoById(id).orElseThrow(ResourceNotFoundException::new);
 
         if(pagamento.getStatus() != null){
             pagamentoExistente.setStatus(pagamento.getStatus());

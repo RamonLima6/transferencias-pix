@@ -65,9 +65,8 @@ public class PagamentoController {
     }
 
     @PatchMapping(path="/update/{id}")
-    public Pagamento updatePagamento(@PathVariable UUID id) {
-        Pagamento pagamento = pagamentoRepository.findPagamentoById(id).orElseThrow(ResourceNotFoundException::new);
-        return pagamentoService.updatePagamento(pagamento);
+    public Pagamento updatePagamento(@PathVariable UUID id, @RequestBody Pagamento pagamento) {
+        return pagamentoService.updatePagamento(id, pagamento);
     }
 
     @PatchMapping(path="/cancelar/{id}")
