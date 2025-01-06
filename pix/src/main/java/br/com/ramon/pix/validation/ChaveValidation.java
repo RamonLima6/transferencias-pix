@@ -1,21 +1,24 @@
 package br.com.ramon.pix.validation;
 
+import br.com.ramon.pix.models.entities.Pagamento;
 import br.com.ramon.pix.models.enums.TipoChave;
 
 public class ChaveValidation {
-    public static TipoChave inferirTipoChave(String chavePix){
-        if(chavePix.contains("@")){
-            return TipoChave.EMAIL;
-        }else if(chavePix.length() == 11){
-            long chavePixInt = Long.parseLong(chavePix);
+    public static void inferirTipoChave(Pagamento pagamento) {
+        if(pagamento.getDestino().getChavePix().contains("@")){
+            pagamento.getDestino().setTipoChavePix(TipoChave.EMAIL);
+        }else if(pagamento.getDestino().getChavePix().length() == 11){
+            long chavePixInt = Long.parseLong(pagamento.getDestino().getChavePix());
             chavePixInt = somarAlgarismos(chavePixInt);
             if(chavePixInt == 33 || chavePixInt == 44 || chavePixInt == 55 || chavePixInt == 66){
-                return TipoChave.CPF;
+                pagamento.getDestino().setTipoChavePix(TipoChave.CPF);
             }else{
-                return TipoChave.TELEFONE;
+                pagamento.getDestino().setTipoChavePix(TipoChave.TELEFONE);
             }
+        }else if(pagamento.getDestino().getChavePix().matches("[0-9a-fA-F\\-]{36}")){
+            pagamento.getDestino().setTipoChavePix(TipoChave.ALEATORIA);
         }else{
-            return TipoChave.ALEATORIA;
+            throw new IllegalArgumentException("Chave pix inválida.");
         }
     }
     public static int somarAlgarismos(long numero) {

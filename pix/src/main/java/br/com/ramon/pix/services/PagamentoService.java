@@ -25,9 +25,7 @@ public class PagamentoService {
         if (pagamento.getDestino().getChavePix() == null){
             throw new NullPointerException("Chave pix null");
         }else{
-            TipoChave tipoChave = ChaveValidation.inferirTipoChave(pagamento.getDestino().getChavePix());
-            pagamento.getDestino().setTipoChavePix(tipoChave);
-            pagamento.getDestino().setChavePix(pagamento.getDestino().getChavePix());
+            ChaveValidation.inferirTipoChave(pagamento);
         }
     }
 
@@ -52,9 +50,22 @@ public class PagamentoService {
     }
 
     public Pagamento salvarPagamento(Pagamento pagamento) {
-        definirTipoChavePix(pagamento);
-        definirStatusPix(pagamento);
         pagamento.setDataInclusao(LocalDate.now());
+        if (pagamento.getDataPagamento() == null){
+            throw new NullPointerException("Data do pagamento null");
+        }else if(pagamento.getDataPagamento().isBefore(LocalDate.now())){
+            throw new IllegalArgumentException("A data do pagamento deve ser atual ou futura!")
+        }else{
+            definirStatusPix(pagamento);
+        }
+        if (pagamento.getDestino().getChavePix() == null){
+            throw new NullPointerException("Chave pix null");
+        }else{
+            definirTipoChavePix(pagamento);
+        }
+        if (pagamento.getValor() == null) {
+            throw new NullPointerException("Valor null");
+        }
         return pagamentoRepository.save(pagamento);
     }
 
@@ -75,7 +86,15 @@ public class PagamentoService {
             pagamentoExistente.setDataInclusao(pagamento.getDataInclusao());
         }
         if(pagamento.getDataPagamento() != null){
-            pagamentoExistente.setDataPagamento(pagamento.getDataPagamento());
+            if(pagamento.getDataInclusao() != null){
+                if(pagamento.getDataPagamento().isBefore(pagamento.getDataInclusao())){
+                    throw new IllegalArgumentException("A data do pagamento deve ser atual ou futura em relação a data da inclusão!");
+                }
+            }else if(pagamento.getDataPagamento().isBefore(pagamentoExistente.getDataInclusao())){
+                    throw new IllegalArgumentException("A data do pagamento deve ser atual ou futura em relação a data da inclusão!");
+            }else{
+                pagamentoExistente.setDataPagamento(pagamento.getDataPagamento());
+            }
         }
         if(pagamento.getValor() != null){
             pagamentoExistente.setValor(pagamento.getValor());
