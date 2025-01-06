@@ -1,6 +1,5 @@
 package br.com.ramon.pix.controllers;
 
-import br.com.ramon.pix.exception.ResourceNotFoundException;
 import br.com.ramon.pix.models.entities.Pagamento;
 import br.com.ramon.pix.models.enums.StatusPagamento;
 import br.com.ramon.pix.models.repositories.PagamentoRepository;
