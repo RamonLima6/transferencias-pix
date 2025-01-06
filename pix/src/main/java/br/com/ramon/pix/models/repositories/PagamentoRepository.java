@@ -2,12 +2,14 @@ package br.com.ramon.pix.models.repositories;
 
 import br.com.ramon.pix.models.entities.Pagamento;
 
+import br.com.ramon.pix.models.enums.StatusPagamento;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,4 +21,6 @@ public interface PagamentoRepository extends PagingAndSortingRepository<Pagament
     @Modifying
     @Query("DELETE FROM Pagamento p WHERE p.id = :id")
     void deleteByIdCustom(@Param("id") UUID id);
+
+    List<Pagamento> findByStatus(StatusPagamento status);
 }

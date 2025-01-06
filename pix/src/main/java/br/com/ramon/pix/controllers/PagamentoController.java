@@ -2,6 +2,7 @@ package br.com.ramon.pix.controllers;
 
 import br.com.ramon.pix.exception.ResourceNotFoundException;
 import br.com.ramon.pix.models.entities.Pagamento;
+import br.com.ramon.pix.models.enums.StatusPagamento;
 import br.com.ramon.pix.models.repositories.PagamentoRepository;
 import br.com.ramon.pix.services.PagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PagamentoController {
         return ResponseEntity.ok(novoPagamento);
     }
 
-    @GetMapping
+    @GetMapping("/consultar/todos")
     public Iterable<Pagamento> listaPagamento(){
         return pagamentoRepository.findAll();
     }
@@ -37,10 +38,30 @@ public class PagamentoController {
         return pagamentoRepository.findPagamentoById(id);
     }
 
+    @GetMapping(path="/consultar/efetuados")
+    public Iterable<Pagamento> obterPagamentoEfetuados() {
+        return pagamentoRepository.findByStatus(StatusPagamento.EFETUADO);
+    }
+
+    @GetMapping(path="/consultar/agendados")
+    public Iterable<Pagamento> obterPagamentoAgendados() {
+        return pagamentoRepository.findByStatus(StatusPagamento.AGENDADO);
+    }
+
+    @GetMapping(path="/consultar/cancelados")
+    public Iterable<Pagamento> obterPagamentoCancelados() {
+        return pagamentoRepository.findByStatus(StatusPagamento.CANCELADO);
+    }
+
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<String> deletarPagamento(@PathVariable UUID id) {
         pagamentoService.deletePagamento(id);
         return ResponseEntity.ok("Pagamento com ID '" + id + "' foi removido com sucesso.");
+    }
+    @DeleteMapping("/remover/removertodosospagamentosdobancodedados")
+    public ResponseEntity<String> deletarTodosPagamentos(){
+        pagamentoService.deleteAllPagamentos();
+        return ResponseEntity.ok("Todos pagamentos removidos com sucesso.");
     }
 
     @PatchMapping(path="/update/{id}")
