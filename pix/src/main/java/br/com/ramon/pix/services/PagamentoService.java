@@ -5,7 +5,6 @@ import br.com.ramon.pix.models.entities.DestinoPagamento;
 import br.com.ramon.pix.models.entities.Pagamento;
 import br.com.ramon.pix.models.entities.Recorrencia;
 import br.com.ramon.pix.models.enums.StatusPagamento;
-import br.com.ramon.pix.models.enums.TipoChave;
 import br.com.ramon.pix.models.repositories.PagamentoRepository;
 import br.com.ramon.pix.validation.ChaveValidation;
 import jakarta.transaction.Transactional;
@@ -54,7 +53,7 @@ public class PagamentoService {
         if (pagamento.getDataPagamento() == null){
             throw new NullPointerException("Data do pagamento null");
         }else if(pagamento.getDataPagamento().isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("A data do pagamento deve ser atual ou futura!")
+            throw new IllegalArgumentException("A data do pagamento deve ser atual ou futura!");
         }else{
             definirStatusPix(pagamento);
         }
